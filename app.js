@@ -19,23 +19,19 @@ app.get('/', (req, res) => {
 })
 
 app.post('/image', (req, res) => {
-  //doc du lieu tu file imageData
-  var imageInfoCollection = imagesController.fetchImageCollection();
-  //khai bao object
   var imageInfo = {
     name : req.body.name,
     imageLink : req.body.imageLink,
     description : req.body.description
   }
-  //push data moi vao colletiom
-  imageInfoCollection.push(imageInfo);
 
-  //luu lai vao file
-  imagesController.saveImageCollection(imageInfoCollection);
+  imagesController.postImage(imageInfo);
+
   //bao thanh cong
   res.send('Success');
 })
 
+//Hien thi toan bo anh
 app.get('/image', (req,res) => {
   var imageInfoCollection = imagesController.fetchImageCollection();
 
@@ -46,16 +42,52 @@ app.get('/image', (req,res) => {
   })
 
   res.send(htmlString);
-
 })
 
+//Tim kiem anh theo name va description
+app.get('/image/search', (req,res) => {
+  var imageInfo = {
+    name : req.query.name,
+    imageLink : req.query.imageLink,
+    description : req.query.description
+  }
+
+  imageInfoCollection = imagesController.getImage(imageInfo);
+
+  htmlString = '';
+
+  imageInfoCollection.forEach((data) => {
+    htmlString += `<div>${data.name}</div><img src="${data.imageLink}"><div>${data.description}</div>`;
+  })
+
+  res.send(htmlString);
+})
+
+//update anh theo link
 app.put('/image', (req, res) => {
+  var imageInfo = {
+    name : req.body.name,
+    imageLink : req.body.imageLink,
+    description : req.body.description
+  }
 
+  imagesController.updateImage(imageInfo);
+
+  res.send("Update Success");
 })
 
+//Delete anh theo link
 app.delete('/image', (req, res) => {
-  
+  var imageInfo = {
+    imageLink : req.body.imageLink,
+  }
+
+  imagesController.deleteImage(imageInfo);
+
+  res.send("Success delete");
 })
+
+
 
 //mo 1 cai port de chay local
 app.listen(6969, (req, res) => {
