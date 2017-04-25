@@ -22,10 +22,26 @@ Router.post('/', (req, res) => {
 
 Router.get('/', (req, res) => {
   var imageInfoCollection = imagesController.fetchImageCollection();
-
-
-
   res.send(imageInfoCollection);
+
+  var imageInfo = {
+    name : req.body.name,
+    imageLink : req.body.imageLink,
+    description : req.body.description
+  }
+
+
+
+})
+
+Router.get('/search', (req, res) => {
+  var imageInfo = {
+    name : req.query.name
+  }
+  var imageInfoCollection = imagesController.fetchImageByName(imageInfo.name);
+
+  res.send(imageInfoCollection + "hehe");
+
 })
 
 Router.put('/', (req, res) => {
@@ -38,17 +54,25 @@ Router.put('/', (req, res) => {
 
     var result = imagesController.updateImageCollectionById(req.body.id, newData);
 
-    res.send(result);
   }
   else {
     res.send("Dont't have id");
   }
 
+  res.send("Success");
 
 })
 
 Router.delete('/', (req, res) => {
+  //khai bao object
+  var imageInfo = {
+    id : req.body._id
+  }
 
+  //luu lai vao DB
+  imagesController.deleteImage(imageInfo);
+  //bao thanh cong
+  res.send('Success');
 })
 
 module.exports = Router;

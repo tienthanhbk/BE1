@@ -13,19 +13,53 @@ var addImage = (data) => {
   })
 }
 
+var deleteImage = (data) => {
+  imagesModel.deleteOne(data, (err, doc) => {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      console.log(doc);
+    }
+  })
+}
+
 var fetchImageCollection = () => {
-  var imageInfoCollection = [];
+  // var imageInfoCollection = [];
+  //
+  // try {
+  //   var contents = fs.readFileSync('imageData.json','utf-8');
+  //
+  //   imageInfoCollection = JSON.parse(contents);
+  //
+  // } catch (e) {
+  //   console.log(e);
+  // }
+  //
+  // return imageInfoCollection;
+}
 
-  try {
-    var contents = fs.readFileSync('imageData.json','utf-8');
-
-    imageInfoCollection = JSON.parse(contents);
-
-  } catch (e) {
-    console.log(e);
+var fetchImageByName = (_name) => {
+  var data;
+  var getData= (callback)=>{
+    var obj;
+    imagesModel.find({name : _name}, (err, data)=>{
+      if(err){
+        console.log(err);
+      }
+      else{
+        obj= data;
+        callback(obj);
+      }
+    });
   }
 
-  return imageInfoCollection;
+  getData(function(_data){
+    console.log(_data + "em chua biet cach de cho ra res nhung bay gio buon ngu qua roi :(((");
+    data = _data;
+  })
+
+  return data;
 }
 
 var saveImageCollection = (data) => {
@@ -33,22 +67,16 @@ var saveImageCollection = (data) => {
 }
 
 var updateImageCollectionById = (id, newData) => {
-  var imageInfoCollection = fetchImageCollection();
-
-  if(id < 1 || id > imageInfoCollection.length) {
-    return 'Id invalid';
-  }
-  else {
-    imageInfoCollection[id - 1] = newData;
-
-    saveImageCollection(imageInfoCollection);
-
-    return 'Success';
-  }
+  imagesModel.update({_id : id}, newData, (err, raw) => {
+    if (err) return handleError(err);
+    console.log('The raw response from Mongo was ', raw);
+  })
 }
 module.exports = {
   fetchImageCollection : fetchImageCollection,
+  fetchImageByName : fetchImageByName,
   saveImageCollection : saveImageCollection,
   updateImageCollectionById : updateImageCollectionById,
-  addImage : addImage
+  addImage : addImage,
+  deleteImage : deleteImage
 }
