@@ -40,6 +40,29 @@ var getAllUsers = (callback) => {
 
 }
 
+var updateUserInfoById = (info, callback) => {
+  var query = {};
+  if(info.userName != null){
+    query.userName = info.userName;
+  }
+
+  if(info.password != null){
+    query.password = info.password;
+  }
+
+  if(info.nickName != null){
+    query.nickName = info.nickName;
+  }
+
+  usersModel.update({id : info.id},
+    {$set : //dùng $set để chỉ làm thay đổi các fields được chỉ định
+      query
+    }).exec((err) => {
+      callback(err);
+    })
+
+}
+
 var fetchUserCollection = () => {
 
 }
@@ -54,5 +77,6 @@ var updateUserCollectionById = (id, newData) => {
 
 module.exports = {
   addUser,
-  getAllUsers
+  getAllUsers,
+  updateUserInfoById
 }

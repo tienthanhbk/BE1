@@ -74,6 +74,20 @@ var deleteImageById = (_id, callback) => {
 }
 
 var updateImageInfoById = (info, callback) => {
+  var query = {};
+
+  if(info.name != null){
+    query.name = info.name;
+  }
+
+  if(info.description != null){
+    query.description = info.description;
+  }
+
+  if(info.imageLink != null){
+    query.imageLink = info.imageLink;
+  }
+
   imagesModel.update({id : info.id},
     {$set : //dùng $set để chỉ làm thay đổi các fields được chỉ định
       { name : info.name,

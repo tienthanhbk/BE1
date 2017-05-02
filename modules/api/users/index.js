@@ -46,7 +46,27 @@ Router.get('/', (req, res) => {
 })
 
 Router.put('/', (req, res) => {
-  res.send("Chua viet");
+  if (req.body.id) {
+    var newData = {
+      id : req.body.id,
+      userName : req.body.userName,
+      password : req.body.password,
+      nickName : req.body.nickName
+    }
+
+    usersController.updateUserInfoById(newData, (err) => {
+      if(err){
+        console.log(err);
+        res.send("Co loiiiiiiiiiiiiiiiiii");
+      }
+      else {
+        res.send("Update thanh cong");
+      }
+    })
+  } else {
+    req.send("Vui long nhap id, khong thi cho version sau");
+  }
+
 })
 
 Router.delete('/', (req, res) => {
