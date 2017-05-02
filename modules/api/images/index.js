@@ -48,7 +48,16 @@ Router.get('/', (req, res) => {
 
 Router.get('/search/', (req, res) => {
   var name = req.query.name;
-  res.send(name);
+  console.log(name);
+  imagesController.getImagesLikeName(name, (err, doc) => {
+    if(err){
+      console.log(err);
+      res.send("Co loiiiiiiiiiiiiiiiiiiii");
+    }
+    else {
+      res.send(doc);
+    }
+  })
 })
 
 Router.put('/', (req, res) => {

@@ -53,6 +53,17 @@ var getAllImages = (callback) => {
 
 }
 
+var getImagesLikeName = (_name, callback) => {
+  imagesModel.find({name : new RegExp(_name, 'i')}).exec((err, doc) => {
+    if(err){
+      callback(err);
+    }
+    else {
+      callback(null, doc);
+    }
+  })
+}
+
 var deleteImageById = (_id, callback) => {
   imagesModel.remove({id : _id}, (err) => {
     if(err) callback(err);
@@ -115,5 +126,6 @@ module.exports = {
   getAllImages,
   getFinalId,
   deleteImageById,
-  updateImageInfoById
+  updateImageInfoById,
+  getImagesLikeName
 }
