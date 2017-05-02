@@ -62,6 +62,19 @@ var deleteImageById = (_id, callback) => {
   })
 }
 
+var updateImageInfoById = (info, callback) => {
+  imagesModel.update({id : info.id},
+    {$set : //dùng $set để chỉ làm thay đổi các fields được chỉ định
+      { name : info.name,
+        description : info.description,
+        imageLink: info.imageLink
+      }
+    }).exec((err) => {
+      callback(err);
+    })
+
+}
+
 var fetchImageCollection = () => {
   var imageInfoCollection = [];
 
@@ -101,5 +114,6 @@ module.exports = {
   addImage,
   getAllImages,
   getFinalId,
-  deleteImageById
+  deleteImageById,
+  updateImageInfoById
 }

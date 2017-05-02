@@ -54,17 +54,25 @@ Router.get('/search/', (req, res) => {
 Router.put('/', (req, res) => {
   if (req.body.id) {
     var newData = {
+      id : req.body.id,
       name : req.body.name,
       imageLink : req.body.imageLink,
       description : req.body.description
     }
 
-    var result = imagesController.updateImageCollectionById(req.body.id, newData);
-
-    res.send(result);
-    return;
+    imagesController.updateImageInfoById(newData, (err) => {
+      if(err){
+        console.log(err);
+        res.send("Co loiiiiiiiiiiiiiiiiii");
+      }
+      else {
+        res.send("Update thanh cong");
+      }
+    })
+  } else {
+    req.send("Vui long nhap id, khong thi cho version sau");
   }
-  res.send(`Don't have id`);
+
 })
 
 Router.delete('/', (req, res) => {
