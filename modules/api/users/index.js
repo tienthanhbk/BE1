@@ -14,6 +14,16 @@ Router.post('/', (req, res) => {
     email : req.body.email
   }
 
+  //regular expressions để valid email
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if(userInfo.email != null){
+    if(re.test(userInfo.email) == false){
+      res.send("Dia chi email nhap khong dung");
+
+      return;
+    }
+  }
+
   console.log('post data ',req.body);
 
   usersController.addUser(userInfo, (err, doc) => {
@@ -43,6 +53,20 @@ Router.get('/', (req, res) => {
     console.log(e);
     res.send("Co exceptiom");
   }
+})
+
+Router.get('/search/', (req, res) => {
+  var userName = req.query.userName;
+  console.log(userName);
+  usersController.getUsersLikeName(userName, (err, doc) => {
+    if(err){
+      console.log(err);
+      res.send("Co loiiiiiiiiiiiiiiiiiiii");
+    }
+    else {
+      res.send(doc);
+    }
+  })
 })
 
 Router.put('/', (req, res) => {

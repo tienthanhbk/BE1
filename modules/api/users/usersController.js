@@ -40,6 +40,17 @@ var getAllUsers = (callback) => {
 
 }
 
+var getUsersLikeName = (_userName, callback) => {
+  usersModel.find({userName : new RegExp(_userName, 'i')}).exec((err, doc) => {
+    if(err){
+      callback(err);
+    }
+    else {
+      callback(null, doc);
+    }
+  })
+}
+
 var updateUserInfoById = (info, callback) => {
   var query = {};
   if(info.userName != null){
@@ -78,5 +89,6 @@ var updateUserCollectionById = (id, newData) => {
 module.exports = {
   addUser,
   getAllUsers,
-  updateUserInfoById
+  updateUserInfoById,
+  getUsersLikeName
 }
