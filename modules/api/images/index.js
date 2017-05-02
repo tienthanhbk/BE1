@@ -68,7 +68,11 @@ Router.put('/', (req, res) => {
 })
 
 Router.delete('/', (req, res) => {
-
+  var id = req.body.id;
+  imagesController.deleteImageById(id, (err) => {
+    if(err) res.send("Co loiiiiiiiiiiiiiiiiiii khi xoa");
+    else res.send("Xoa thanh cong");
+  });
 })
 
 module.exports = Router;

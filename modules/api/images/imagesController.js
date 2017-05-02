@@ -53,6 +53,15 @@ var getAllImages = (callback) => {
 
 }
 
+var deleteImageById = (_id, callback) => {
+  imagesModel.remove({id : _id}, (err) => {
+    if(err) callback(err);
+    else
+      //remove
+      callback(null);
+  })
+}
+
 var fetchImageCollection = () => {
   var imageInfoCollection = [];
 
@@ -91,5 +100,6 @@ module.exports = {
   updateImageCollectionById,
   addImage,
   getAllImages,
-  getFinalId
+  getFinalId,
+  deleteImageById
 }
