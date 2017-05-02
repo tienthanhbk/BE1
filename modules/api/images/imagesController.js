@@ -49,14 +49,13 @@ var fetchImageByName = (_name) => {
       }
       else{
         obj= data;
-        return callback(obj);
+        data = callback(obj);
       }
     });
   }
 
   getData(function(_data){
     console.log(_data + "em chua biet cach de cho ra res nhung bay gio buon ngu qua roi :(((");
-    data = _data;
     return JSON.stringify(_data);
   })
 
