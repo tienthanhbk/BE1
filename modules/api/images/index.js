@@ -14,65 +14,61 @@ Router.post('/', (req, res) => {
 
   console.log('post data ',req.body);
 
-  //luu lai vao DB
-  imagesController.addImage(imageInfo);
-  //bao thanh cong
-  res.send('Success');
-})
+  imagesController.addImage(imageInfo, (err, doc) => {
+    if(err) {
+      console.log(err);
+      res.send("Co loiiiiiiiiiiiiiiii");
+    }
+    else {
+      res.send("Success");
+    }
+  });
+
+
+});
 
 Router.get('/', (req, res) => {
-  var imageInfoCollection = imagesController.fetchImageCollection();
-  res.send(imageInfoCollection);
+  try {
+    imagesController.getAllImages((err, doc) => {
+      if(err){
+        console.log(err);
+        res.send("Co loiiiiiiiiiiiiiiiiiiiiiiiii");
+      }
+      else {
+        res.send(doc);
+      }
+    });
 
-  var imageInfo = {
-    name : req.body.name,
-    imageLink : req.body.imageLink,
-    description : req.body.description
+  } catch (e) {
+    console.log(e);
+    res.send("Co exceptiom");
   }
-
-
 
 })
 
-Router.get('/search', (req, res) => {
-  var imageInfo = {
-    name : req.query.name
-  }
-  var imageInfoCollection = imagesController.fetchImageByName(imageInfo.name);
-
-  res.send(imageInfoCollection + "hehe");
-
+Router.get('/search/', (req, res) => {
+  var name = req.query.name;
+  res.send(name);
 })
 
 Router.put('/', (req, res) => {
-  if(req.body.id) {
+  if (req.body.id) {
     var newData = {
-      name  : req.body.name,
+      name : req.body.name,
       imageLink : req.body.imageLink,
       description : req.body.description
     }
 
     var result = imagesController.updateImageCollectionById(req.body.id, newData);
 
+    res.send(result);
+    return;
   }
-  else {
-    res.send("Dont't have id");
-  }
-
-  res.send("Success");
-
+  res.send(`Don't have id`);
 })
 
 Router.delete('/', (req, res) => {
-  //khai bao object
-  var imageInfo = {
-    id : req.body._id
-  }
 
-  //luu lai vao DB
-  imagesController.deleteImage(imageInfo);
-  //bao thanh cong
-  res.send('Success');
 })
 
 module.exports = Router;

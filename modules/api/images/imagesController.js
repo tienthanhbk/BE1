@@ -1,65 +1,71 @@
 const fs = require('fs');
 const imagesModel = require('./imagesModel');
 
-
-var addImage = (data) => {
-  imagesModel.create(data, (err, doc) => {
-    if (err) {
+var addImage = (data, callback) => {
+  imagesModel.findOne({})
+  .select('id')
+  .sort({id : -1})
+  .exec((err, doc) => {
+    if(err){
       console.log(err);
+      callback(err);
     }
     else {
-      console.log(doc);
+      var id = doc && doc.id ? doc.id + 1 : 1;
+
+      data.id = id;
+
+      imagesModel.create(data, (err, doc) => {
+        if (err) {
+          console.log(err);
+          callback(err);
+        } else {
+          console.log(doc);
+          callback(null, doc);
+        }
+      })
+    }
+  })
+
+
+}
+
+var getFinalId = (callback) => {
+  imagesModel.find({}, (err, doc) => {
+    if(err){
+      callback(err);
+    }
+    else {
+      callback(null, doc);
     }
   })
 }
 
-var deleteImage = (data) => {
-  imagesModel.deleteOne(data, (err, doc) => {
-    if (err) {
-      console.log(err);
+var getAllImages = (callback) => {
+  imagesModel.find({}, (err, doc) => {
+    if(err){
+      callback(err);
     }
     else {
-      console.log(doc);
+      callback(null, doc);
     }
   })
+
 }
 
 var fetchImageCollection = () => {
-  // var imageInfoCollection = [];
-  //
-  // try {
-  //   var contents = fs.readFileSync('imageData.json','utf-8');
-  //
-  //   imageInfoCollection = JSON.parse(contents);
-  //
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  //
-  // return imageInfoCollection;
-}
+  var imageInfoCollection = [];
 
-var fetchImageByName = (_name) => {
-  var data;
-  var getData= (callback)=>{
-    var obj;
-    imagesModel.find({name : _name}, (err, data)=>{
-      if(err){
-        console.log(err);
-      }
-      else{
-        obj= data;
-        data = callback(obj);
-      }
-    });
+  try {
+    var contents = fs.readFileSync('imageData.json','utf-8');
+
+    imageInfoCollection = JSON.parse(contents);
+
+  } catch (e) {
+    console.log(e);
   }
 
-  getData(function(_data){
-    console.log(_data + "em chua biet cach de cho ra res nhung bay gio buon ngu qua roi :(((");
-    return JSON.stringify(_data);
-  })
-
-  return data;
+  return imageInfoCollection;
 }
 
 var saveImageCollection = (data) => {
@@ -67,16 +73,23 @@ var saveImageCollection = (data) => {
 }
 
 var updateImageCollectionById = (id, newData) => {
-  imagesModel.update({_id : id}, newData, (err, raw) => {
-    if (err) return handleError(err);
-    console.log('The raw response from Mongo was ', raw);
-  })
+  var imageInfoCollection = fetchImageCollection();
+
+  if (id < 1 || id > imageInfoCollection.length)
+    return 'Id invalid';
+  else {
+    imageInfoCollection[id-1] = newData;
+
+    saveImageCollection(imageInfoCollection);
+    return 'Success';
+  }
 }
+
 module.exports = {
-  fetchImageCollection : fetchImageCollection,
-  fetchImageByName : fetchImageByName,
-  saveImageCollection : saveImageCollection,
-  updateImageCollectionById : updateImageCollectionById,
-  addImage : addImage,
-  deleteImage : deleteImage
+  fetchImageCollection,
+  saveImageCollection,
+  updateImageCollectionById,
+  addImage,
+  getAllImages,
+  getFinalId
 }
