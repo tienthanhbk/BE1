@@ -5,6 +5,9 @@ const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const clientRouter = require('./client');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 mongoose.Promise = global.Promise;
 
 const config = require('./config.json');
@@ -18,12 +21,11 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json({ extended : true}));
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('/', (req, res) => {
-  res.send('./public/index.html');
-})
+app.use(session({ secret : 'lol', resave : false, saveUninitialized: true,  cookie : {} }))
+app.use(cookieParser());
 
+app.use('/', clientRouter);
 app.use('/api/image', imagesRouter);
-
 app.use('/api/user', usersRouter);
 
 mongoose.connect(config.connectionString, (err) => {

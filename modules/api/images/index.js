@@ -1,7 +1,5 @@
 const express = require('express');
-
 const Router = express.Router();
-
 const imagesController = require('./imagesController');
 
 Router.post('/', (req, res) => {
@@ -9,7 +7,8 @@ Router.post('/', (req, res) => {
   var imageInfo = {
     name : req.body.name,
     imageLink : req.body.imageLink,
-    description : req.body.description
+    description : req.body.description,
+    createBy : req.body.userId
   }
 
   console.log('post data ',req.body);
@@ -23,41 +22,48 @@ Router.post('/', (req, res) => {
       res.send("Success");
     }
   });
-
-
 });
 
+//Thiếu 2 trường posterAvatar và posterName.
+//Why???????
 Router.get('/', (req, res) => {
   try {
-    imagesController.getAllImages((err, doc) => {
-      if(err){
-        console.log(err);
-        res.send("Co loiiiiiiiiiiiiiiiiiiiiiiiii");
-      }
-      else {
-        res.send(doc);
-      }
-    });
+    if(req.query.s){
+      //Co query s thi
+      imagesController.getImagesLikeName(req.query.s, (err, data) => {
+        if(err) {
+          console.log(err);
+          res.send('Co loi');
+        } else {
+          res.send(data);
+        }
+      })
+    } else if(req.query.id){
+      //Co query id thi
+      imagesController.getImagesById(req.query.id, (err, data) => {
+        if(err) {
+          console.log(err);
+          res.send('Co loi, khong co id tuong ung');
+        } else {
+          res.send(data);
+        }
+      })
+    } else {
+      //Ko co query s va id thi get all
+      imagesController.getAllCookedImages((err, data) => {
+        if(err) {
+          console.log(err);
+          res.send("co Loiii");
+        } else {
+          res.send(data);
+        }
+      });
+    }
 
   } catch (e) {
     console.log(e);
     res.send("Co exceptiom");
   }
-
-})
-
-Router.get('/search/', (req, res) => {
-  var name = req.query.name;
-  console.log(name);
-  imagesController.getImagesLikeName(name, (err, doc) => {
-    if(err){
-      console.log(err);
-      res.send("Co loiiiiiiiiiiiiiiiiiiii");
-    }
-    else {
-      res.send(doc);
-    }
-  })
 })
 
 Router.put('/', (req, res) => {
